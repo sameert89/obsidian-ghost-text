@@ -17,5 +17,4 @@ The general steps are as follows:
 
 
 ```python
-
 ```

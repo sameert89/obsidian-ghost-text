@@ -4,7 +4,8 @@ import {Result} from "neverthrow";
 export interface PredictionService {
     fetchPredictions(
         prefix: string,
-        suffix: string
+        suffix: string,
+        abortSignal?: AbortSignal
     ): Promise<Result<string, Error>>;
 }
 
@@ -43,7 +44,7 @@ export type UserMessageFormatter = (
 ) => string;
 
 export interface ApiClient {
-    queryChatModel(messages: ChatMessage[]): Promise<Result<string, Error>>;
+    queryChatModel(messages: ChatMessage[], abortSignal?: AbortSignal): Promise<Result<string, Error>>;
     checkIfConfiguredCorrectly(): Promise<string[]>;
 }
 
@@ -53,4 +54,6 @@ export interface ModelOptions {
     frequency_penalty: number;
     presence_penalty: number;
     max_tokens: number;
+    max_completion_tokens?: number;
+    useMaxCompletionTokens?: boolean;
 }

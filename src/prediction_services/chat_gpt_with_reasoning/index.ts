@@ -106,7 +106,8 @@ class ChatGPTWithReasoning implements PredictionService {
 
     async fetchPredictions(
         prefix: string,
-        suffix: string
+        suffix: string,
+        abortSignal?: AbortSignal
     ): Promise<Result<string, Error>> {
         const context: Context = Context.getContext(prefix, suffix);
 
@@ -144,7 +145,7 @@ class ChatGPTWithReasoning implements PredictionService {
             console.log("Copilot messages send:\n", messages);
         }
 
-        let result = await this.client.queryChatModel(messages);
+        let result = await this.client.queryChatModel(messages, abortSignal);
         if (this.debugMode && result.isOk()) {
             console.log("Copilot response:\n", result.value);
         }

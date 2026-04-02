@@ -7,15 +7,24 @@ const UNIQUE_CURSOR = `${generateRandomString(16)}`;
 
 class DataViewRemover implements PreProcessor {
     process(prefix: string, suffix: string, context: Context): PrefixAndSuffix {
-        let text = prefix + UNIQUE_CURSOR + suffix;
-        text = text.replace(DATA_VIEW_REGEX, "");
-        const [prefixNew, suffixNew] = text.split(UNIQUE_CURSOR);
+        // Only process the last 5000 chars of prefix and first 5000 of suffix for dataview removal
+        // to keep it performant while still being effective.
+        const prefixWindow = prefix.slice(-5000);
+        const suffixWindow = suffix.slice(0, 5000);
+        const prefixRest = prefix.slice(0, -5000);
+        const suffixRest = suffix.slice(5000);
 
-        return { prefix: prefixNew, suffix: suffixNew };
+        let text = prefixWindow + UNIQUE_CURSOR + suffixWindow;
+        text = text.replace(DATA_VIEW_REGEX, "");
+        const [prefixNewWindow, suffixNewWindow] = text.split(UNIQUE_CURSOR);
+
+        return { prefix: prefixRest + prefixNewWindow, suffix: suffixNewWindow + suffixRest };
     }
 
     removesCursor(prefix: string, suffix: string): boolean {
-        const text = prefix + UNIQUE_CURSOR + suffix;
+        const prefixWindow = prefix.slice(-5000);
+        const suffixWindow = suffix.slice(0, 5000);
+        const text = prefixWindow + UNIQUE_CURSOR + suffixWindow;
         const dataviewAreasWithCursor = text
             .match(DATA_VIEW_REGEX)
             ?.filter((dataviewArea) => dataviewArea.includes(UNIQUE_CURSOR));

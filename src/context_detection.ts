@@ -31,31 +31,36 @@ namespace Context {
     }
 
     export function getContext(prefix: string, suffix: string): Context {
-        if (new RegExp(HEADER_REGEX, "gm").test(prefix + UNIQUE_CURSOR + suffix)) {
+        // Only look at a window around the cursor for performance.
+        const prefixWindow = prefix.slice(-1000);
+        const suffixWindow = suffix.slice(0, 1000);
+        const textWindow = prefixWindow + UNIQUE_CURSOR + suffixWindow;
+
+        if (new RegExp(HEADER_REGEX, "gm").test(textWindow)) {
             return Context.Heading;
         }
-        if (new RegExp(BLOCK_QUOTES_REGEX,"gm").test(prefix + UNIQUE_CURSOR + suffix)) {
+        if (new RegExp(BLOCK_QUOTES_REGEX,"gm").test(textWindow)) {
             return Context.BlockQuotes;
         }
 
-        if (new RegExp(TASK_LIST_REGEX, "gm").test(prefix + UNIQUE_CURSOR + suffix)) {
+        if (new RegExp(TASK_LIST_REGEX, "gm").test(textWindow)) {
             return Context.TaskList;
         }
 
         if (
-            isCursorInRegexBlock(prefix, suffix, MATH_BLOCK_REGEX) ||
-            isCursorInRegexBlock(prefix, suffix, INLINE_MATH_BLOCK_REGEX)
+            isCursorInRegexBlock(prefixWindow, suffixWindow, MATH_BLOCK_REGEX) ||
+            isCursorInRegexBlock(prefixWindow, suffixWindow, INLINE_MATH_BLOCK_REGEX)
         ) {
             return Context.MathBlock;
         }
 
-        if (isCursorInRegexBlock(prefix, suffix, CODE_BLOCK_REGEX) || isCursorInRegexBlock(prefix, suffix, INLINE_CODE_BLOCK_REGEX)) {
+        if (isCursorInRegexBlock(prefixWindow, suffixWindow, CODE_BLOCK_REGEX) || isCursorInRegexBlock(prefixWindow, suffixWindow, INLINE_CODE_BLOCK_REGEX)) {
             return Context.CodeBlock;
         }
-        if (new RegExp(NUMBERED_LIST_REGEX, "gm").test(prefix + UNIQUE_CURSOR + suffix)) {
+        if (new RegExp(NUMBERED_LIST_REGEX, "gm").test(textWindow)) {
             return Context.NumberedList;
         }
-        if (new RegExp(UNORDERED_LIST_REGEX, "gm").test(prefix + UNIQUE_CURSOR + suffix)) {
+        if (new RegExp(UNORDERED_LIST_REGEX, "gm").test(textWindow)) {
             return Context.UnorderedList;
         }
 

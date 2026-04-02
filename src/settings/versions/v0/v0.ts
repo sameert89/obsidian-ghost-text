@@ -98,6 +98,7 @@ export const DEFAULT_SETTINGS: Settings = {
         frequency_penalty: 0.25,
         presence_penalty: 0,
         max_tokens: 800,
+        useMaxCompletionTokens: false,
     },
     // Prompt settings
     systemMessage: `Your job is to predict the most logical text that should be written at the location of the <mask/>.

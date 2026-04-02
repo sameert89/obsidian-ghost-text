@@ -38,31 +38,27 @@ export const updateSuggestion = (
     suggestion: string
 ) => {
     const doc = view.state.doc;
-    sleep(1).then(() => {
-        view.dispatch({
-            effects: InlineSuggestionEffect.of({
-                suggestion: {
-                    value: suggestion,
-                    render: true,
-                },
-                doc: doc,
-            }),
-        });
+    view.dispatch({
+        effects: InlineSuggestionEffect.of({
+            suggestion: {
+                value: suggestion,
+                render: true,
+            },
+            doc: doc,
+        }),
     });
 };
 
 export const cancelSuggestion = (view: EditorView) => {
     const doc = view.state.doc;
-    sleep(1).then(() => {
-        view.dispatch({
-            effects: InlineSuggestionEffect.of({
-                suggestion: {
-                    value: "",
-                    render: false,
-                },
-                doc: doc,
-            }),
-        });
+    view.dispatch({
+        effects: InlineSuggestionEffect.of({
+            suggestion: {
+                value: "",
+                render: false,
+            },
+            doc: doc,
+        }),
     });
 };
 

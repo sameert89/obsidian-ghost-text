@@ -364,6 +364,40 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                     max={MAX_MAX_TOKENS}
                     step={10}
                 />
+                <CheckBoxSettingItem
+                    name={"Use Max Completion Tokens (for o1, o3-mini models)"}
+                    description={
+                        "If enabled, 'max_completion_tokens' will be sent instead of 'max_tokens'. This is required for newer OpenAI models like o1 and o3-mini. If disabled, 'max_tokens' will be used (legacy support)."
+                    }
+                    enabled={settings.modelOptions.useMaxCompletionTokens}
+                    setEnabled={(value) => updateSettings({
+                        modelOptions: {
+                            ...settings.modelOptions,
+                            useMaxCompletionTokens: value,
+                        },
+                    })}
+                />
+                {settings.modelOptions.useMaxCompletionTokens && (
+                    <SliderSettingsItem
+                        name={"Max Completion Tokens"}
+                        description={
+                            "Limits the number of tokens in the final completion, excluding reasoning tokens. Used when 'Use Max Completion Tokens' is enabled."
+                        }
+                        value={settings.modelOptions.max_completion_tokens || settings.modelOptions.max_tokens}
+                        errorMessage={errors.get("modelOptions.max_completion_tokens")}
+                        setValue={(value: number) =>
+                            updateSettings({
+                                modelOptions: {
+                                    ...settings.modelOptions,
+                                    max_completion_tokens: value,
+                                },
+                            })
+                        }
+                        min={MIN_MAX_TOKENS}
+                        max={MAX_MAX_TOKENS}
+                        step={10}
+                    />
+                )}
             </>)}
 
             <h2>Preprocessing</h2>
@@ -409,7 +443,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
             />
             <h2>Postprocessing</h2>
             <CheckBoxSettingItem
-                name={"Auto remove duplicate mat block indicators"}
+                name={"Auto remove duplicate math block indicators"}
                 description={
                     "The AI model might eagerly add a math block indicator ($), even though the cursor is already inside a math block. If this setting is enabled, the plugin will automatically remove these duplicate indicators from the completion."
                 }
@@ -419,7 +453,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 }
             />
             <CheckBoxSettingItem
-                name={"Auto remove duplicate mat block indicators"}
+                name={"Auto remove duplicate code block indicators"}
                 description={
                     "The AI model might eagerly add a code block indicator (`), even though the cursor is already inside a code block. If this setting is enabled, the plugin will automatically remove these duplicate indicators from the completion."
                 }
@@ -440,7 +474,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 setValue={(value: number) => updateSettings({delay: value})}
                 min={MIN_DELAY}
                 max={MAX_DELAY}
-                step={100}
+                step={50}
                 suffix={"ms"}
             />
             <TriggerSettings

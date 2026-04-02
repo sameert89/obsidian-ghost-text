@@ -45,6 +45,9 @@ export const modelOptionsSchema = z.object({
     presence_penalty: z.number().min(MIN_PRESENCE_PENALTY, {message: `Presence penalty must be at least ${MIN_PRESENCE_PENALTY}`}).max(MAX_PRESENCE_PENALTY, {message: `Presence penalty must be at most ${MAX_PRESENCE_PENALTY}`}),
     max_tokens: z.number().int()
         .min(MIN_MAX_TOKENS, {message: `max_tokens must be at least than ${MIN_MAX_TOKENS}`}).max(MAX_MAX_TOKENS, {message: `max_tokens must be at most ${MAX_MAX_TOKENS}`}),
+    max_completion_tokens: z.number().int()
+        .min(MIN_MAX_TOKENS, {message: `max_completion_tokens must be at least than ${MIN_MAX_TOKENS}`}).max(MAX_MAX_TOKENS, {message: `max_completion_tokens must be at most ${MAX_MAX_TOKENS}`}).optional(),
+    useMaxCompletionTokens: z.boolean().optional(),
 }).strict();
 
 export const fewShotExampleSchema = z.object({

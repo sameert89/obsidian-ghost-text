@@ -9,11 +9,13 @@ class PredictingState extends State {
     private isStillNeeded = true;
     private readonly prefix: string;
     private readonly suffix: string;
+    private readonly abortController: AbortController;
 
     constructor(context: EventListener, prefix: string, suffix: string) {
         super(context);
         this.prefix = prefix;
         this.suffix = suffix;
+        this.abortController = new AbortController();
     }
 
     static createAndStartPredicting(
@@ -47,6 +49,7 @@ class PredictingState extends State {
 
     private cancelPrediction(): void {
         this.isStillNeeded = false;
+        this.abortController.abort();
         this.context.transitionToIdleState();
     }
 
@@ -59,14 +62,18 @@ class PredictingState extends State {
         const result =
             await this.context.predictionService?.fetchPredictions(
                 this.prefix,
-                this.suffix
+                this.suffix,
+                this.abortController.signal
             );
 
-        if (!this.isStillNeeded) {
+        if (!this.isStillNeeded || this.abortController.signal.aborted) {
             return;
         }
 
         if (result.isErr()) {
+            if (result.error.name === 'AbortError') {
+                return;
+            }
             new Notice(
                 `Copilot: Something went wrong cannot make a prediction. Full error is available in the dev console. Please check your settings. `
             );

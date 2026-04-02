@@ -27,7 +27,7 @@ class OllamaApiClient implements ApiClient {
         this.model = model;
     }
 
-    async queryChatModel(messages: ChatMessage[]): Promise<Result<string, Error>> {
+    async queryChatModel(messages: ChatMessage[], abortSignal?: AbortSignal): Promise<Result<string, Error>> {
         const headers = {
             "Content-Type": "application/json",
         };

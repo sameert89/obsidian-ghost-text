@@ -76,7 +76,8 @@ describe('settingsSchema', () => {
         top_p: 0.7,
         frequency_penalty: 1,
         presence_penalty: 0.2,
-        max_tokens: 150
+        max_tokens: 150,
+        useMaxCompletionTokens: false,
     });
     const validFewShotExample = fewShotExampleSchema.parse({context: Context.Text, input: 'def', answer: 'ghi'});
 

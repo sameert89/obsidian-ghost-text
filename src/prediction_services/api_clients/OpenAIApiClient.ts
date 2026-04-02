@@ -32,19 +32,75 @@ class OpenAIApiClient implements ApiClient {
         this.model = model;
     }
 
-    async queryChatModel(messages: ChatMessage[]): Promise<Result<string, Error>> {
-        const headers = {
+    async queryChatModel(messages: ChatMessage[], abortSignal?: AbortSignal): Promise<Result<string, Error>> {
+        const headers: Record<string, string> = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.apiKey}`,
         };
-        const body = {
+        const body: any = {
             messages,
             model: this.model,
             ...this.modelOptions,
+            stream: true,
         }
 
-        const data = await makeAPIRequest(this.url, "POST", body, headers);
-        return data.map((data) => data.choices[0].message.content);
+        if (this.modelOptions.useMaxCompletionTokens) {
+            body.max_completion_tokens = this.modelOptions.max_completion_tokens || this.modelOptions.max_tokens;
+            delete body.max_tokens;
+        } else {
+            delete body.max_completion_tokens;
+        }
+        delete body.useMaxCompletionTokens;
+
+        try {
+            const response = await fetch(this.url, {
+                method: "POST",
+                headers,
+                body: JSON.stringify(body),
+                signal: abortSignal,
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                return err(new Error(`OpenAI API error: ${errorData.error?.message || response.statusText}`));
+            }
+
+            const reader = response.body?.getReader();
+            if (!reader) {
+                return err(new Error("Failed to get response body reader"));
+            }
+
+            let fullContent = "";
+            const decoder = new TextDecoder();
+            let remainder = "";
+
+            while (true) {
+                const {done, value} = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, {stream: true});
+                const lines = (remainder + chunk).split("\n");
+                remainder = lines.pop() || "";
+
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine || trimmedLine === "data: [DONE]") continue;
+                    if (trimmedLine.startsWith("data: ")) {
+                        try {
+                            const data = JSON.parse(trimmedLine.slice(6));
+                            const content = data.choices[0]?.delta?.content || "";
+                            fullContent += content;
+                        } catch (e) {
+                            console.error("Error parsing SSE line", trimmedLine, e);
+                        }
+                    }
+                }
+            }
+
+            return ok(fullContent);
+        } catch (e) {
+            return err(e instanceof Error ? e : new Error(String(e)));
+        }
     }
 
     async checkIfConfiguredCorrectly(): Promise<string[]> {

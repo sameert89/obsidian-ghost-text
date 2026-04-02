@@ -23,12 +23,21 @@ class AzureOAIClient implements ApiClient {
         );
     }
 
-    async queryChatModel(messages: ChatMessage[]): Promise<Result<string, Error>> {
+    async queryChatModel(messages: ChatMessage[], abortSignal?: AbortSignal): Promise<Result<string, Error>> {
         const headers = {
             "Content-Type": "application/json",
             "api-key": this.apiKey,
         }
-        const body = {messages, ...this.modelOptions};
+        const body: any = {messages, ...this.modelOptions};
+
+        if (this.modelOptions.useMaxCompletionTokens) {
+            body.max_completion_tokens = this.modelOptions.max_completion_tokens || this.modelOptions.max_tokens;
+            delete body.max_tokens;
+        } else {
+            delete body.max_completion_tokens;
+        }
+        delete body.useMaxCompletionTokens;
+
         const data = await makeAPIRequest(this.url, "POST", body, headers);
         return data.map((data) => data.choices[0].message.content);
     }

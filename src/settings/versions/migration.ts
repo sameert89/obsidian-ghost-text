@@ -33,6 +33,8 @@ export function migrateFromV0ToV1(settings: SettingsV0): SettingsV1 {
     // Add the 'version' property with the value '1'
     updatedSettings.version = '1';
 
+    updatedSettings.modelOptions.useMaxCompletionTokens = false;
+
     if (!isRegexValid(updatedSettings.chainOfThoughRemovalRegex)) {
         updatedSettings.chainOfThoughRemovalRegex = DEFAULT_SETTINGS_V1.chainOfThoughRemovalRegex;
     }

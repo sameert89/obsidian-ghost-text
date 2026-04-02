@@ -131,12 +131,19 @@ describe('modelOptionsSchema', () => {
         top_p: 0.7,
         frequency_penalty: 1,
         presence_penalty: 0.2,
-        max_tokens: 150
+        max_tokens: 150,
+        useMaxCompletionTokens: false,
     };
     const propertiesNames = Object.keys(modelOptionsSchema.shape) as Array<keyof ModelOptionsSchemaType>;
 
     test.each(propertiesNames)('should throw an error if %s is missing', (property) => {
         const dataWithoutProperty = cloneDeep(baseData);
+        // max_completion_tokens is optional, so it shouldn't throw if missing
+        if (property === "max_completion_tokens") return;
+        // useMaxCompletionTokens has a default, but zod might still require it if using .strict() and it's missing from the object being parsed
+        // actually .default() makes it optional during parsing.
+        if (property === "useMaxCompletionTokens") return;
+
         delete dataWithoutProperty[property];
         expect(() => modelOptionsSchema.parse(dataWithoutProperty)).toThrow();
     });
@@ -144,6 +151,22 @@ describe('modelOptionsSchema', () => {
 
     test('should validate successfully with all values in valid ranges', () => {
         expect(modelOptionsSchema.parse(baseData)).toEqual(baseData);
+    });
+
+    test('should validate successfully with max_completion_tokens', () => {
+        const data = {
+            ...baseData,
+            max_completion_tokens: 250,
+        };
+        expect(modelOptionsSchema.parse(data)).toEqual(data);
+    });
+
+    test('should validate successfully with useMaxCompletionTokens as true', () => {
+        const data = {
+            ...baseData,
+            useMaxCompletionTokens: true,
+        };
+        expect(modelOptionsSchema.parse(data)).toEqual(data);
     });
 
     test('should throw an error with temperature below 0', () => {
