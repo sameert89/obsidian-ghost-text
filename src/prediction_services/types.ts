@@ -55,5 +55,5 @@ export interface ModelOptions {
     presence_penalty: number;
     max_tokens: number;
     max_completion_tokens?: number;
-    useMaxCompletionTokens?: boolean;
+    useMaxCompletionTokens: boolean;
 }

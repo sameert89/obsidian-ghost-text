@@ -16,11 +16,11 @@ abstract class State implements EventHandler {
         const settingErrors = checkForErrors(settings);
 
         if (!settings.enabled) {
-            new Notice("Copilot is now disabled.");
+            new Notice("Ghost Text is now disabled.");
             this.context.transitionToDisabledManualState()
         } else if (settingErrors.size > 0) {
             new Notice(
-                `Copilot: There are ${settingErrors.size} errors in your settings. The plugin will be disabled until they are fixed.`
+                `Ghost Text: There are ${settingErrors.size} errors in your settings. The plugin will be disabled until they are fixed.`
             );
             this.context.transitionToDisabledInvalidSettingsState();
         } else if (this.context.isCurrentFilePathIgnored() || this.context.currentFileContainsIgnoredTag()) {

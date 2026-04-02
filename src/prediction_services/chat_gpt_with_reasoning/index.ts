@@ -142,12 +142,12 @@ class ChatGPTWithReasoning implements PredictionService {
         ];
 
         if (this.debugMode) {
-            console.log("Copilot messages send:\n", messages);
+            console.log("Ghost Text messages send:\n", messages);
         }
 
         let result = await this.client.queryChatModel(messages, abortSignal);
         if (this.debugMode && result.isOk()) {
-            console.log("Copilot response:\n", result.value);
+            console.log("Ghost Text response:\n", result.value);
         }
 
         result = this.extractAnswerFromChainOfThoughts(result);

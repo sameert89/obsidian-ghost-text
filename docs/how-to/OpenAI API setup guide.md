@@ -19,5 +19,4 @@
 5. Confirm that the `OpenAI API URL` field is set to `https://api.openai.com/v1/chat/completions`.
 6. Test the connection by clicking the `Test Connection` button to ensure the API key is correct and the plugin can connect to the OpenAI API.
 7. Exit the settings window.
-8. The plugin is now ready for use. Begin typing, and upon reaching a trigger, such as the end of a sentence, the plugin will offer suggestions. Or manually trigger the plugin by opening the command palette and typing `Copilot auto completion: Predict`.
-
+8. The plugin is now ready for use. Begin typing, and upon reaching a trigger, such as the end of a sentence, the plugin will offer suggestions. Or manually trigger the plugin by opening the command palette and typing `Ghost Text auto completion: Predict`.

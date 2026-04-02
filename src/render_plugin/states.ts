@@ -29,7 +29,12 @@ export const InlineSuggestionState = StateField.define<OptionalSuggestion>({
         ) {
             return inlineSuggestion.value.suggestion;
         }
-        return null;
+
+        if (transaction.docChanged || (transaction as any).selectionSet) {
+            return null;
+        }
+
+        return value;
     },
 });
 

@@ -33,6 +33,11 @@ const RenderSuggestionPlugin = () =>
 
                     if (suggestion !== null && suggestion !== undefined) {
                         this.suggestion = suggestion;
+                    } else {
+                        this.suggestion = {
+                            value: "",
+                            render: false,
+                        };
                     }
 
                     this.decorations = inlineSuggestionDecoration(

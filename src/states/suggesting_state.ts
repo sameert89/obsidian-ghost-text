@@ -42,6 +42,19 @@ class SuggestingState extends State {
             return;
         }
 
+        // Check if user typed exactly what was at the start of the suggestion
+        const addedPrefix = documentChanges.getAddedPrefixText();
+        if (addedPrefix && this.suggestion.startsWith(addedPrefix)) {
+            const remaining = this.suggestion.substring(addedPrefix.length);
+            if (remaining.length > 0) {
+                this.context.transitionToSuggestingState(remaining, documentChanges.getPrefix(), documentChanges.getSuffix(), false);
+                return;
+            } else {
+                this.clearPrediction();
+                return;
+            }
+        }
+
         if (this.hasUserAddedPartOfSuggestion(documentChanges)) {
             this.acceptPartialAddedText(documentChanges);
             return

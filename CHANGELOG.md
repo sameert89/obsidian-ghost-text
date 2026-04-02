@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+- Added support for **Streaming API**. Suggestions now appear instantly as they are generated.
+- Improved performance for faster auto-completions.
+- Added support for modern OpenAI models (including `o1` and `o3-mini`) via `max_completion_tokens`.
+- Tested and verified compatibility with OpenAI and Ollama.
+- Marked Azure support as experimental (untested).
+- Simplified README for better clarity and BRAT installation instructions.
+
 ## 1.1.3
 - Made openai api key optional for `OpenAI API` provider. This allows you to point the `OpenAI API` provider to any local model or other api provider that implements the OpenAI API.
 

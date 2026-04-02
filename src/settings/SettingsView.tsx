@@ -517,7 +517,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 errorMessage={errors.get("ignoredFilePatterns")}
             >
                 <textarea
-                    className="setting-item-text-area-copilot-auto-completion"
+                    className="setting-item-text-area-obsidian-ghost-text"
                     rows={10}
                     placeholder="Your file patterns, e.g., **/secret/**"
                     value={settings.ignoredFilePatterns}
@@ -542,7 +542,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                 errorMessage={errors.get("ignoredTags")}
             >
                 <textarea
-                    className="setting-item-text-area-copilot-auto-completion"
+                    className="setting-item-text-area-obsidian-ghost-text"
                     rows={10}
                     placeholder="Your file tags, e.g., secret"
                     value={settings.ignoredTags}
@@ -604,7 +604,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                         errorMessage={errors.get("systemMessage")}
                     >
                         <textarea
-                            className="setting-item-text-area-copilot-auto-completion"
+                            className="setting-item-text-area-obsidian-ghost-text"
                             rows={10}
                             placeholder="Your system message..."
                             value={settings.systemMessage}
@@ -625,7 +625,7 @@ export default function SettingsView(props: IProps): React.JSX.Element {
                         errorMessage={errors.get("userMessageTemplate")}
                     >
                         <textarea
-                            className="setting-item-text-area-copilot-auto-completion"
+                            className="setting-item-text-area-obsidian-ghost-text"
                             rows={3}
                             placeholder="{{prefix}}<mask/>{{suffix}}"
                             value={settings.userMessageTemplate}

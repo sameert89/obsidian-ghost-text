@@ -137,6 +137,7 @@ export const DEFAULT_SETTINGS: Settings = {
         {type: "string", value: "= "},
         {type: "string", value: "$ "},
         {type: "string", value: "> "},
+        {type: "string", value: " "},
         {type: "string", value: "\n"},
 
         // bullet list
@@ -149,9 +150,11 @@ export const DEFAULT_SETTINGS: Settings = {
         {type: "regex", value: "```[a-zA-Z0-9]*(\\n\\s*)?$"},
         // task list normal, sub or numbered.
         {type: "regex", value: "\\s*(-|[0-9]+\\.) \\[.\\]\\s+$"},
+        // end of word
+        {type: "regex", value: "[a-zA-Z0-9]+$"},
     ],
 
-    delay: 250,
+    delay: 500,
     // Request settings
     modelOptions: {
         temperature: 1,

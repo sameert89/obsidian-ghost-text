@@ -47,7 +47,7 @@ export const modelOptionsSchema = z.object({
         .min(MIN_MAX_TOKENS, {message: `max_tokens must be at least than ${MIN_MAX_TOKENS}`}).max(MAX_MAX_TOKENS, {message: `max_tokens must be at most ${MAX_MAX_TOKENS}`}),
     max_completion_tokens: z.number().int()
         .min(MIN_MAX_TOKENS, {message: `max_completion_tokens must be at least than ${MIN_MAX_TOKENS}`}).max(MAX_MAX_TOKENS, {message: `max_completion_tokens must be at most ${MAX_MAX_TOKENS}`}).optional(),
-    useMaxCompletionTokens: z.boolean().optional(),
+    useMaxCompletionTokens: z.boolean(),
 }).strict();
 
 export const fewShotExampleSchema = z.object({

@@ -75,7 +75,7 @@ class PredictingState extends State {
                 return;
             }
             new Notice(
-                `Copilot: Something went wrong cannot make a prediction. Full error is available in the dev console. Please check your settings. `
+                `Ghost Text: Something went wrong cannot make a prediction. Full error is available in the dev console. Please check your settings. `
             );
             console.error(result.error);
             this.context.transitionToIdleState();
