@@ -1,7 +1,7 @@
 import {ApiClient, ChatMessage, ModelOptions} from "../types";
 
 import {Settings} from "../../settings/versions";
-import {Result} from "neverthrow";
+import {err, ok, Result} from "neverthrow";
 import {makeAPIRequest} from "./utils";
 
 
@@ -40,17 +40,25 @@ class OpenAIApiClient implements ApiClient {
         const body: any = {
             messages,
             model: this.model,
-            ...this.modelOptions,
+            temperature: this.modelOptions.temperature,
+            top_p: this.modelOptions.top_p,
+            frequency_penalty: this.modelOptions.frequency_penalty,
+            presence_penalty: this.modelOptions.presence_penalty,
             stream: true,
         }
 
         if (this.modelOptions.useMaxCompletionTokens) {
             body.max_completion_tokens = this.modelOptions.max_completion_tokens || this.modelOptions.max_tokens;
-            delete body.max_tokens;
         } else {
-            delete body.max_completion_tokens;
+            body.max_tokens = this.modelOptions.max_tokens;
         }
-        delete body.useMaxCompletionTokens;
+
+        // Some models (like o1) don't support certain parameters. 
+        // If temperature is 1 (default), we can omit it to be safe.
+        if (body.temperature === 1) delete body.temperature;
+        if (body.top_p === 1) delete body.top_p;
+        if (body.frequency_penalty === 0) delete body.frequency_penalty;
+        if (body.presence_penalty === 0) delete body.presence_penalty;
 
         try {
             const response = await fetch(this.url, {
