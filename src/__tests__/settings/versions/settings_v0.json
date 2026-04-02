@@ -88,7 +88,8 @@
       "top_p": 0.1,
       "frequency_penalty": 0.25,
       "presence_penalty": 0,
-      "max_tokens": 800
+      "max_tokens": 800,
+      "useMaxCompletionTokens": false
     },
     "systemMessage": "Your job is to predict the most logical text that should be written at the location of the <mask/>.\nYour answer can be either code, a single word, or multiple sentences.\nYour answer must be in the same language as the text that is already there.\nYour response must have the following format:\nTHOUGHT: here you explain your reasoning of what could be at the location of <mask/>\nANSWER: here you write the text that should be at the location of <mask/>\n",
     "fewShotExamples": [

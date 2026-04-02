@@ -6,7 +6,7 @@ on:
     - '*'
 
 env:
-  PLUGIN_NAME: obsidian-copilot-plugin
+  PLUGIN_NAME: obsidian-ghost-text
 
 jobs:
   build:
@@ -33,11 +33,12 @@ jobs:
     - name: Bundle
       id: bundle
       run: |
+        TAG_NAME=$(git tag --sort version:refname | tail -n 1)
+        echo "::set-output name=tag_name::$TAG_NAME"
         mkdir ${{ env.PLUGIN_NAME }}
         cp main.js manifest.json styles.css ${{ env.PLUGIN_NAME }}
-        zip -r ${{ env.PLUGIN_NAME }}-${{ steps.build.outputs.tag_name }}.zip ${{ env.PLUGIN_NAME }}
+        zip -r ${{ env.PLUGIN_NAME }}-${TAG_NAME}.zip ${{ env.PLUGIN_NAME }}
         ls
-        echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
 
     - name: Get release notes
       id: release_notes
