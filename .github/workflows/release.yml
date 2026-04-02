@@ -34,7 +34,7 @@ jobs:
       id: bundle
       run: |
         TAG_NAME=$(git tag --sort version:refname | tail -n 1)
-        echo "::set-output name=tag_name::$TAG_NAME"
+        echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
         mkdir ${{ env.PLUGIN_NAME }}
         cp main.js manifest.json styles.css ${{ env.PLUGIN_NAME }}
         zip -r ${{ env.PLUGIN_NAME }}-${TAG_NAME}.zip ${{ env.PLUGIN_NAME }}
@@ -43,12 +43,23 @@ jobs:
     - name: Get release notes
       id: release_notes
       run: |
-        CHANGELOG=$(sed -n -e "/## ${{ steps.bundle.outputs.tag_name }}/,/## /p" CHANGELOG.md | sed '/## /d')
+        TAG_NAME="${{ steps.bundle.outputs.tag_name }}"
+        CLEAN_TAG=$(echo "$TAG_NAME" | sed -E 's/^v//; s/-.*//')
+        
+        CHANGELOG=$(sed -n -e "/## $TAG_NAME/,/## /p" CHANGELOG.md | sed '/## /d')
+        
+        if [ -z "$CHANGELOG" ]; then
+          CHANGELOG=$(sed -n -e "/## $CLEAN_TAG/,/## /p" CHANGELOG.md | sed '/## /d')
+        fi
+        
         if [ -z "$CHANGELOG" ]; then  
-          echo "Error: No release notes found for this version in CHANGELOG.md"  
-          exit 1  
+          echo "No release notes found for $TAG_NAME in CHANGELOG.md, using default message."
+          CHANGELOG="No release notes provided for this version."
         fi  
-        echo "::set-output name=body::${CHANGELOG}"  
+        
+        echo "body<<EOF" >> $GITHUB_OUTPUT
+        echo "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Release
       uses: softprops/action-gh-release@v1
